@@ -16,6 +16,8 @@ jobs:
     name: package and release
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+          contents: write
     steps:
       # setup the environment
       - name: generate release token
@@ -48,7 +50,7 @@ jobs:
       - name: ✨ create release
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-        run: npx semantic-release -r https://github.com/cduggan-reapit/ReleaseTesting.git
+        run: npx semantic-release
 
       - name: ❓ did it do anything
         run: echo ${{ env.version_created }}
