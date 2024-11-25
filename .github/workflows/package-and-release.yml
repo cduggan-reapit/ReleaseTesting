@@ -11,8 +11,6 @@ env:
   nuget_feed_name: 'github'
   nuget_user_name: cduggan-reapit
   version_created: '0.0.0' 
-permissions:
-  contents: read
 jobs:
   release-and-publish:
     name: package and release
@@ -20,27 +18,32 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       # setup the environment
-      - name: 📩 checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: ⚙️ setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "lts/*"
-      - name: ⚙️ setup dotnet
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 6.0.x
-      - name: 🔨 install dependencies
-        run: npm ci --include=dev
-
       - name: generate release token
         id: generate-token
         uses: actions/create-github-app-token@v1
         with: 
           app-id: ${{ secrets.RELEASE_APP_ID }}
           private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+          
+      - name: 📩 checkout
+        uses: actions/checkout@v4
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+        with:
+          fetch-depth: 0
+
+      - name: ⚙️ setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+
+      - name: ⚙️ setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 6.0.x
+
+      - name: 🔨 install dependencies
+        run: npm ci --include=dev
       
       - name: ✨ create release
         env:
