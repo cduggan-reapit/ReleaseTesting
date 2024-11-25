@@ -37,6 +37,7 @@ jobs:
         run: npm ci --include=dev
       
       - name: ✨ create release
+        if: ${{ false }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release
