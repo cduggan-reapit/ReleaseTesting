@@ -10,8 +10,7 @@ env:
   nuget_feed_source: https://nuget.pkg.github.com/reapit/index.json
   nuget_feed_name: 'github'
   nuget_user_name: cduggan-reapit
-  VERSION_CREATED: '0.0.0'
-  HUSKY: 0
+  version_created: '0.0.0' 
 permissions:
   contents: read
 jobs:
@@ -35,23 +34,27 @@ jobs:
           dotnet-version: 6.0.x
       - name: 🔨 install dependencies
         run: npm ci --include=dev
+
+      - name: generate release token
+        id: generate-token
+        uses: actions/create-github-app-token@v1
+        with: 
+          app-id: ${{ secrets.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
       
       - name: ✨ create release
-        if: ${{ false }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: npx semantic-release
 
       - name: ❓ did it do anything
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: echo ${{ env.VERSION_CREATED }}
+        run: echo ${{ env.version_created }}
       
         # publish to github (eventually, right now it just uploads the nupkg)
-      # VERSION_CREATED is overwritten when a new version is created in the previous step
+      # version_created is overwritten when a new version is created in the previous step
       # if it's not 0.0.0 anymore, then a new version has been cut
       # - name: 🎉 publish to packages
-      #   if: ${{ env.VERSION_CREATED != '0.0.0' }}
+      #   if: ${{ env.version_created != '0.0.0' }}
       #   run: |
       #     dotnet nuget add source ${{ env.nuget_feed_source }} --name "${{ env.nuget_feed_name }}" --store-password-in-clear-text --username ${{ env.nuget_user_name }} --password ${{ secrets.GH_NUGET_WRITE_TOKEN }}
       #     dotnet pack ./src/Reapit.Platform.Common/Reapit.Platform.Common.csproj -o ./package/ -c Release
