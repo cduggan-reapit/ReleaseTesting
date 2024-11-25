@@ -5,7 +5,7 @@
   "version": "0.0.0-dev",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cduggan-reapit/ReleaseTesting.git"
+    "url": "https://github.com/cduggan-reapit/ReleaseTesting.git"
   },
   "homepage": "https://github.com/cduggan-reapit/ReleaseTesting#readme",
   "bugs": {

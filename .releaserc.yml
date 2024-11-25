@@ -16,14 +16,12 @@ plugins:
             - key: Version
               value: ${nextRelease.version}
   -
-    - "@semantic-release/git"
+    - "@semantic-release/github"
     - assets:
       - path: "docs/changelog.md"
         label: changelog
       - path: "src/Example.Package/Example.Package.csproj"
         label: project file
-  -
-    - "@semantic-release/github"
   -
     - "@semantic-release/exec"
     - successCmd: "echo VERSION_CREATED=${nextRelease.version} >> $GITHUB_ENV"
