@@ -5,22 +5,22 @@ plugins:
   - "@semantic-release/release-notes-generator"
   - 
     - "@semantic-release/changelog"
-    - changelogFile: "changelog.md"
+    - changelogFile: "docs/changelog.md"
   -
     - "@droidsolutions-oss/semantic-release-update-file"
     - files:
         - type: xml
           path:
-            - "src/Reapit.Platform.Common/Reapit.Platform.Common.csproj"
+            - "src/Example.Package/Example.Package.csproj"
           replacements:
             - key: Version
               value: ${nextRelease.version}
   -
     - "@semantic-release/git"
     - assets:
-      - path: "changelog.md"
+      - path: "docs/changelog.md"
         label: changelog
-      - path: "src/Reapit.Platform.Common/Reapit.Platform.Common.csproj"
+      - path: "src/Example.Package/Example.Package.csproj"
         label: project file
   -
     - "@semantic-release/github"
