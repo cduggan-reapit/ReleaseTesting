@@ -1,0 +1,57 @@
+name: Package and Release
+on:
+  workflow_run:
+    workflows: ["Build and Test"]
+    branches: [main]
+    types:
+      - completed
+
+env:
+  nuget_feed_source: https://nuget.pkg.github.com/reapit/index.json
+  nuget_feed_name: 'github'
+  nuget_user_name: cduggan-reapit
+  VERSION_CREATED: '0.0.0'
+  HUSKY: 0
+permissions:
+  contents: read
+jobs:
+  release-and-publish:
+    name: package and release
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      # setup the environment
+      - name: 📩 checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: ⚙️ setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+      - name: ⚙️ setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 6.0.x
+      - name: 🔨 install dependencies
+        run: npm ci --include=dev
+      
+      - name: ✨ create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
+
+      - name: ❓ did it do anything
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo ${{ env.VERSION_CREATED }}
+      
+        # publish to github (eventually, right now it just uploads the nupkg)
+      # VERSION_CREATED is overwritten when a new version is created in the previous step
+      # if it's not 0.0.0 anymore, then a new version has been cut
+      # - name: 🎉 publish to packages
+      #   if: ${{ env.VERSION_CREATED != '0.0.0' }}
+      #   run: |
+      #     dotnet nuget add source ${{ env.nuget_feed_source }} --name "${{ env.nuget_feed_name }}" --store-password-in-clear-text --username ${{ env.nuget_user_name }} --password ${{ secrets.GH_NUGET_WRITE_TOKEN }}
+      #     dotnet pack ./src/Reapit.Platform.Common/Reapit.Platform.Common.csproj -o ./package/ -c Release
+      #     dotnet nuget push ./package/*.nupkg --source ${{ env.nuget_feed_source }} --api-key ${{ secrets.GH_NUGET_WRITE_TOKEN }} --skip-duplicate --no-symbols
