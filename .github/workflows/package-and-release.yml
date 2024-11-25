@@ -48,7 +48,7 @@ jobs:
       - name: ✨ create release
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-        run: npx semantic-release -r https://github.com/cduggan-reapit/ReleaseTesting/
+        run: npx semantic-release -r https://github.com/cduggan-reapit/ReleaseTesting.git
 
       - name: ❓ did it do anything
         run: echo ${{ env.version_created }}
