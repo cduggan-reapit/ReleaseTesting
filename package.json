@@ -5,11 +5,11 @@
   "version": "0.0.0-dev",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cduggan/ReleaseTesting.git"
+    "url": "git+https://github.com/cduggan-reapit/ReleaseTesting.git"
   },
-  "homepage": "https://github.com/cduggan/ReleaseTesting#readme",
+  "homepage": "https://github.com/cduggan-reapit/ReleaseTesting#readme",
   "bugs": {
-    "url": "https://github.com/cduggan/ReleaseTesting/issues"
+    "url": "https://github.com/cduggan-reapit/ReleaseTesting/issues"
   },
   "scripts": {
     "prepare": "husky"
